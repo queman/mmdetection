@@ -6,14 +6,12 @@ _base_ = [
 
 model = dict(
     backbone=dict(
-        embed_dim=128,
+        embed_dims=128,
         depths=[2, 2, 18, 2],
         num_heads=[4, 8, 16, 32],
         window_size=7,
-        ape=False,
         drop_path_rate=0.3,
-        patch_norm=True,
-        use_checkpoint=False
+        patch_norm=True
     ),
     neck=dict(in_channels=[128, 256, 512, 1024]),
     roi_head=dict(
@@ -126,12 +124,12 @@ optimizer = dict(_delete_=True, type='AdamW', lr=0.0001, betas=(0.9, 0.999), wei
                                                  'relative_position_bias_table': dict(decay_mult=0.),
                                                  'norm': dict(decay_mult=0.)}))
 lr_config = dict(step=[27, 33])
-runner = dict(type='EpochBasedRunnerAmp', max_epochs=36)
+runner = dict(type='EpochBasedRunner', max_epochs=36)
 
 # do not use mmdet version fp16
 fp16 = None
 optimizer_config = dict(
-    type="DistOptimizerHook",
+    type="Fp16OptimizerHook",
     update_interval=1,
     grad_clip=None,
     coalesce=True,
